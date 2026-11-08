@@ -98,7 +98,7 @@ public final class HeldenHerzenPlugin extends JavaPlugin implements Listener {
             meta.setDisplayName(ChatColor.AQUA + "Helden Herz " + variant);
             meta.setLore(List.of(
                     ChatColor.WHITE + "Ein Herz für echte Helden.",
-                    ChatColor.AQUA + "❖ ❖ ❖",
+                    ChatColor.AQUA + "♥ ♥ ♥",
                     ChatColor.BLACK + "?"
             ));
             meta.setCustomModelData(Integer.parseInt(variant));
