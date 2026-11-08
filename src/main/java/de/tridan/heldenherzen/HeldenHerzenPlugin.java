@@ -5,8 +5,11 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,10 +36,29 @@ public final class HeldenHerzenPlugin extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         getServer().getScheduler().runTaskLater(this, () -> {
             if (player.isOnline()) {
-                // Minecraft fragt den Spieler, ob er das Server-Resourcepack laden möchte.
                 player.setResourcePack(resourcePackUrl);
             }
         }, 20L);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerAttack(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player victim)) {
+            return;
+        }
+
+        Player attacker = null;
+        if (event.getDamager() instanceof Player player) {
+            attacker = player;
+        } else if (event.getDamager() instanceof Projectile projectile
+                && projectile.getShooter() instanceof Player player) {
+            attacker = player;
+        }
+
+        if (attacker != null) {
+            attacker.sendMessage(ChatColor.BLUE + "[Helden] " + ChatColor.GOLD
+                    + "Du hast " + victim.getName() + " angegriffen!");
+        }
     }
 
     @Override
