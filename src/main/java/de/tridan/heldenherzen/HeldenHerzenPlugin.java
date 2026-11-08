@@ -5,17 +5,38 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public final class HeldenHerzenPlugin extends JavaPlugin {
+public final class HeldenHerzenPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        getServer().getPluginManager().registerEvents(this, this);
         getLogger().info("HeldenHerzen v1.0.0 für Paper 1.20.1 wurde gestartet.");
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        String resourcePackUrl = getConfig().getString("resource-pack-url", "").trim();
+        if (resourcePackUrl.isEmpty()) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        getServer().getScheduler().runTaskLater(this, () -> {
+            if (player.isOnline()) {
+                // Minecraft fragt den Spieler, ob er das Server-Resourcepack laden möchte.
+                player.setResourcePack(resourcePackUrl);
+            }
+        }, 20L);
     }
 
     @Override
@@ -41,7 +62,8 @@ public final class HeldenHerzenPlugin extends JavaPlugin {
         }
 
         ItemStack item = createHeart(variant);
-        player.getInventory().addItem(item);
+        player.getInventory().addItem(item).values().forEach(leftover ->
+                player.getWorld().dropItemNaturally(player.getLocation(), leftover));
         player.sendMessage(ChatColor.AQUA + "Du hast Helden Herz " + variant + " erhalten!");
         return true;
     }
