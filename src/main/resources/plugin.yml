@@ -1,0 +1,15 @@
+name: HeldenHerzen
+version: 1.0.0
+main: de.tridan.heldenherzen.HeldenHerzenPlugin
+api-version: '1.20'
+author: tridan123123123-eng
+description: Gibt Helden Herz 1 und Helden Herz 2 aus.
+commands:
+  helden:
+    description: Gibt ein Heldens Herz aus.
+    usage: /helden herz <1|2>
+    permission: heldenherzen.use
+permissions:
+  heldenherzen.use:
+    description: Erlaubt die Benutzung von /helden herz.
+    default: true
